@@ -8,7 +8,7 @@ from numpy.core.numeric import flatnonzero
 
 
 class Quasigroup(object):
-    def __init__(self, size: int = -1, file: str = None,  mark: str = "Q"):
+    def __init__(self, size: int = -1, file: str = None, from_1: bool = True,  mark: str = "Q"):
         self.size = size
         self.mark: str = mark  # 1 letter!
         self.loop: bool = False  # full loop, left and right
@@ -18,7 +18,7 @@ class Quasigroup(object):
             self.data = np.array([[(i + j) % size for i in range(size)]
                                   for j in range(size)], int)
         else:
-            if not self.read_from_file(file):
+            if not self.read_from_file(file, from_1):
                 raise NameError("Wrong quasigroup in the file!")
 
     def __str__(self) -> str:
@@ -42,6 +42,9 @@ class Quasigroup(object):
 
         return res
 
+    def __bool__(self):
+        return self.size != -1
+
     def __getitem__(self, i: int, j=None):
         """Getter.
 
@@ -63,15 +66,17 @@ class Quasigroup(object):
                 mask = (1 << el)
                 bit_array |= mask
             if bit_array != full_line:
-                raise NameError("Not a quasigroup!")
+                raise NameError("Not a quasigroup! " +
+                                bin(bit_array) + " " + bin(full_line))
         return True
 
-    def read_from_file(self, file: str) -> bool:
+    def read_from_file(self, file: str, from_1: bool = True) -> bool:
         data = []
         with open(file, "r") as f:
             prev: int = -1
             for row in f.readlines():
-                data.append(list(map(lambda x: int(x) - 1, row.split())))
+                corr: int = 1 if from_1 else 0
+                data.append(list(map(lambda x: int(x) - corr, row.split())))
 
                 if prev != -1 and prev != len(data[-1]):
                     return False
@@ -95,10 +100,11 @@ class Quasigroup(object):
 
     def _do_loop(self, j: int = 0):
         """Make loop by sorting second column and row (j unit)"""
-        self.data = self.data[self.data[:, j].argsort(kind="heapsort")]
-        self.data = self.data[:, self.data[j].argsort(kind="heapsort")]
+        self.data = self.data[self.data[:, j].argsort()]
+        self.data = self.data[:, self.data[j].argsort()]
 
         self.loop = True
+        return True
 
     def _do_left_loop(self) -> bool:
         """Make left but not right loop Q(*) from loop (j = 0)"""
@@ -142,17 +148,16 @@ class Quasigroup(object):
 
 
 if __name__ == "__main__":
-    z_10 = Quasigroup(10)
-    for _ in range(5):
-        i, j = randint(0, 9), randint(0, 9)
-        z_10.transpose_rows(i, j)
+    # qua = Quasigroup(10)
+    # for _ in range(5):
+    #     i, j = randint(0, 9), randint(0, 9)
+    #     qua.transpose_rows(i, j)
 
-        i, j = randint(0, 9), randint(0, 9)
-        z_10.transpose_columns(i, j)
-
-    print(z_10)
-    print()
-    n = z_10.create_simple()
+    #     i, j = randint(0, 9), randint(0, 9)
+    #     qua.transpose_columns(i, j)
+    qua = Quasigroup(file="ex_2.txt", from_1=False)
+    print(qua)
+    n = qua.create_simple()
     if not n:
         print("Something went wrong, sorry!")
     else:

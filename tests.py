@@ -7,9 +7,9 @@ from random import randint
 
 
 @pytest.fixture()
-def from_file_4x4():
-    """Quasigroup 4x4 from file"""
-    return Quasigroup(file="ex_1.txt")
+def from_file():
+    """Quasigroup from file"""
+    return [Quasigroup(file="ex_1.txt"), Quasigroup(file="ex_2.txt", from_1=False)]
 
 
 @pytest.fixture()
@@ -32,10 +32,11 @@ def changed_z_10():
     return z_10
 
 
-def test_all_from_file(from_file_4x4):
+def test_all_from_file(from_file):
     """Test making loop (j=0) and left loop (j=1) for file"""
-    do_loop(from_file_4x4)
-    do_left_loop(from_file_4x4)
+    for qua in from_file:
+        do_loop(qua)
+        do_left_loop(qua)
 
 
 def test_all_z_10(z_10):

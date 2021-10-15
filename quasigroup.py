@@ -4,6 +4,8 @@ import numpy as np
 from copy import deepcopy
 from random import randint
 
+from numpy.core.numeric import flatnonzero
+
 
 class Quasigroup(object):
     def __init__(self, size: int = -1, file: str = None,  mark: str = "Q"):
@@ -71,13 +73,13 @@ class Quasigroup(object):
             for row in f.readlines():
                 data.append(list(map(lambda x: int(x) - 1, row.split())))
 
-                if prev != -1 and prev !=  len(data[-1]):
+                if prev != -1 and prev != len(data[-1]):
                     return False
                 prev = len(data[-1])
 
         self.size = prev
         self.data = np.array(data, int)
-        
+
         if not self.check_correctness():
             return False
         return True
@@ -91,15 +93,15 @@ class Quasigroup(object):
         """Transpose rows"""
         self.data[[i, j]] = self.data[[j, i]]
 
-    def _do_loop(self):
-        """Make loop by sorting first column and row"""
-        self.data = self.data[self.data[:, 0].argsort()]
-        self.data = self.data[:, self.data[0].argsort()]
+    def _do_loop(self, j: int = 0):
+        """Make loop by sorting second column and row (j unit)"""
+        self.data = self.data[self.data[:, j].argsort(kind="heapsort")]
+        self.data = self.data[:, self.data[j].argsort(kind="heapsort")]
 
         self.loop = True
 
     def _do_left_loop(self) -> bool:
-        """Make left but not right loop from loop (j = 1)"""
+        """Make left but not right loop Q(*) from loop (j = 0)"""
         if not self.loop:
             return False
 
@@ -109,28 +111,32 @@ class Quasigroup(object):
 
         return True
 
-    def _isotope(self):
-        """Make isotope 2-simple quasigroup"""
-        for line in self.data:
-            tmp: int = line[1]
-            line[1:-1] = line[2:]
-            line[-1] = tmp
+    def _isotope(self) -> bool:
+        """Make isotope 2-simple quasigroup from loop"""
+        if not self.loop:
+            return False
 
-        self.half_loop = 0
+        tmp = deepcopy(self.data[1])
+        self.data[1:-1] = self.data[2:]
+        self.data[-1] = tmp
 
-    def create_simple(self):
+        self.loop = False
+        self.half_loop = -1
+
+        return True
+
+    def create_simple(self) -> bool:
         """Return 2-simple quasigroup"""
         B = deepcopy(self)
-        B._do_loop()
+        if not B._do_loop():
+            return False
         print()
         print(B)
-        B._do_left_loop()
         print()
-        print(B)
-        print()
-        B._isotope()
+        if not B._isotope():
+            return False
 
-        B.mark = "S"
+        B.mark = "S"  # As simple
 
         return B
 
@@ -143,7 +149,11 @@ if __name__ == "__main__":
 
         i, j = randint(0, 9), randint(0, 9)
         z_10.transpose_columns(i, j)
+
     print(z_10)
     print()
     n = z_10.create_simple()
-    print(n)
+    if not n:
+        print("Something went wrong, sorry!")
+    else:
+        print(n)

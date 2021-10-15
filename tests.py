@@ -57,10 +57,10 @@ def do_loop(quasigroup: Quasigroup):
     assert array_equal(quasigroup[0], list(range(quasigroup.size)))
     for i in range(quasigroup.size):
         assert i == quasigroup[i][0]
-    
+
 
 def do_left_loop(quasigroup: Quasigroup):
-    """Test making left loop (with j = !) from quasigroup"""
+    """Test making left loop (with j = 1) from quasigroup"""
     quasigroup._do_loop()
     quasigroup._do_left_loop()
 

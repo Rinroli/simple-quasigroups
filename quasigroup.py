@@ -89,6 +89,12 @@ class Quasigroup(object):
             return False
         return True
 
+    def export(self, file_name: str = "quasigroup.txt"):
+        """Export quasigroup to the file"""
+        with open(file_name, "w") as f_out:
+            for line in self.data:
+                print(" ".join(map(lambda x: str(x), line)), file=f_out)
+
     def transpose_columns(self, i: int, j: int):
         """Transpose two columns"""
         for line in self.data:
@@ -158,6 +164,7 @@ if __name__ == "__main__":
     qua = Quasigroup(file="ex_2.txt", from_1=False)
     print(qua)
     n = qua.create_simple()
+    n.export()
     if not n:
         print("Something went wrong, sorry!")
     else:

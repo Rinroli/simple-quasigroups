@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """Class for quasigroups."""
 
 import numpy as np
@@ -112,14 +113,23 @@ class Quasigroup(object):
         self.loop = True
         return True
 
-    def _do_left_loop(self) -> bool:
-        """Make left but not right loop Q(*) from loop (j = 0)"""
-        if not self.loop:
+    def _do_2_simple(self, j: int = 0) -> bool:
+        """Make 2-simple Q(*) from left but not right loop (unit j)"""
+        if self.half_loop != -1:
             return False
 
-        self.transpose_rows(0, 1)
+        x: int = 0
+        while (x == j) or (self[x][j] == x):
+            x += 1
+
+            if x == self.size:
+                self.half_loop = 0
+                self.loop == True
+                return False
+
+        self.transpose_columns(j, x)
         self.loop = False
-        self.half_loop = -1
+        self.half_loop = 0
 
         return True
 
@@ -148,6 +158,12 @@ class Quasigroup(object):
         if not B._isotope():
             return False
 
+        print(B)
+        print()
+
+        if not B._do_2_simple():
+            return False
+
         B.mark = "S"  # As simple
 
         return B
@@ -164,8 +180,8 @@ if __name__ == "__main__":
     qua = Quasigroup(file="ex_2.txt", from_1=False)
     print(qua)
     n = qua.create_simple()
-    n.export()
     if not n:
         print("Something went wrong, sorry!")
     else:
         print(n)
+        n.export()

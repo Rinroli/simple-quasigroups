@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Class for quasigroups."""
 
+from math import degrees, tan
 import numpy as np
 from copy import deepcopy
 from random import randint
@@ -76,6 +77,9 @@ class Quasigroup(object):
         with open(file, "r") as f:
             prev: int = -1
             for row in f.readlines():
+                if len(row.split()) == 1:  # C-style
+                    continue
+
                 corr: int = 1 if from_1 else 0
                 data.append(list(map(lambda x: int(x) - corr, row.split())))
 
@@ -107,14 +111,23 @@ class Quasigroup(object):
 
     def _do_loop(self, j: int = 0):
         """Make loop by sorting second column and row (j unit)"""
-        self.data = self.data[self.data[:, j].argsort()]
-        self.data = self.data[:, self.data[j].argsort()]
+        # self.data = self.data[self.data[:, j].argsort()]
+        # self.data = self.data[:, self.data[j].argsort()]
+        tmp_data = np.zeros((self.size, self.size), int)
+        for row in self.data:
+            tmp_data[row[0]] = row
+        self.data = deepcopy(tmp_data)
+
+        for col in range(self.size):
+            for row in range(self.size):
+                tmp_data[row][self.data[0][col]] = self.data[row][col]
+        self.data = deepcopy(tmp_data)
 
         self.loop = True
         return True
 
     def _do_2_simple(self, j: int = 0) -> bool:
-        """Make 2-simple Q(*) from left but not right loop (unit j)"""
+        """Make 2-simple Q(*) from left but not right 3-simple loop (unit j)"""
         if self.half_loop != -1:
             return False
 

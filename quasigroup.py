@@ -4,7 +4,8 @@
 from math import degrees, tan
 import numpy as np
 from copy import deepcopy
-from random import randint
+from random import randint, shuffle
+from itertools import product
 
 from numpy.core.numeric import flatnonzero
 
@@ -97,6 +98,7 @@ class Quasigroup(object):
     def export(self, file_name: str = "quasigroup.txt"):
         """Export quasigroup to the file"""
         with open(file_name, "w") as f_out:
+            print(self.size, file=f_out)
             for line in self.data:
                 print(" ".join(map(lambda x: str(x), line)), file=f_out)
 
@@ -109,18 +111,37 @@ class Quasigroup(object):
         """Transpose rows"""
         self.data[[i, j]] = self.data[[j, i]]
 
+    def rename_elements(self):
+        """Rename elements (random)"""
+        s_n = list(range(self.size))
+        shuffle(s_n)
+
+        for i, j in product(range(self.size), range(self.size)):
+            self.data[i][j] = s_n[self.data[i][j]]
+
+    def random_alteration(self):
+        """Transpose rows and columns, rearranging elements"""
+        num_rep = randint(0, 20)
+        for _ in range(num_rep):
+            i, j = randint(0, self.size - 1), randint(0, self.size - 1)
+            self.transpose_columns(i, j)
+
+        num_rep = randint(0, 20)
+        for _ in range(num_rep):
+            i, j = randint(0, self.size - 1), randint(0, self.size - 1)
+            self.transpose_rows(i, j)
+
+        self.rename_elements()
+
     def _do_loop(self, j: int = 0):
         """Make loop by sorting second column and row (j unit)"""
-        # self.data = self.data[self.data[:, j].argsort()]
-        # self.data = self.data[:, self.data[j].argsort()]
         tmp_data = np.zeros((self.size, self.size), int)
         for row in self.data:
             tmp_data[row[0]] = row
         self.data = deepcopy(tmp_data)
 
-        for col in range(self.size):
-            for row in range(self.size):
-                tmp_data[row][self.data[0][col]] = self.data[row][col]
+        for row, col in product(range(self.size), range(self.size)):
+            tmp_data[row][self.data[0][col]] = self.data[row][col]
         self.data = deepcopy(tmp_data)
 
         self.loop = True
@@ -160,22 +181,22 @@ class Quasigroup(object):
 
         return True
 
-    def create_simple(self) -> bool:
+    def create_simple(self):
         """Return 2-simple quasigroup"""
         B = deepcopy(self)
         if not B._do_loop():
-            return False
+            return Quasigroup()
         print()
         print(B)
         print()
         if not B._isotope():
-            return False
+            return Quasigroup()
 
         print(B)
         print()
 
         if not B._do_2_simple():
-            return False
+            return Quasigroup()
 
         B.mark = "S"  # As simple
 

@@ -3,3 +3,8 @@
 /__pycache__/
 /.pytest_cache/
 *.tar.gz
+gen*
+/subquasi/
+*.zip
+*.7z
+a.*

@@ -1,0 +1,30 @@
+Sat Oct 23 00:15:39 2021
+
+N=16
+KsqrtN=2
+SetSaveInitaialTab=1
+SetDelUsed3At0Level=1
+KIStep_sqrtN_ForRecalcNum=1
+Nk=1
+NCheck=10
+NProc=1
+NProcExt=1
+NNumI2ExtMin=1000
+K_NUsed_sqrtN=1
+SetMakeRandomQ=0
+SetCheckEasy=0
+RezFile=rez.txt_
+LogFile=log.txt_
+InMattr=in.txt
+SetRandomChange=0
+SetOutputSubgroup=1
+SetOutputMattr=0
+SetFindNontrivial=0
+SetSearch1Before=1
+I0=0
+SetOMP=1
+SetLoadQ=1
+FindSubgroupEasy: DT=0
+DT FindSubgroupEasy=0
+DT Max=0 (i=-1)
+Easy: No subgroups

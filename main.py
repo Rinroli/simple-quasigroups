@@ -22,7 +22,7 @@ def one_test(generator: int, q_size: int):
     ex_time = time_time() - start_time
 
     simple.export("in.txt")
-    result = subprocess.run(["subquasi/r"], capture_output=True,
+    result = subprocess.run(["subquasi/prog/r"], capture_output=True,
                             text=True).stdout.rpartition("\n")[0].rpartition("\n")[-1]
 
     if result != "Easy: No subgroups":
@@ -37,13 +37,16 @@ def one_test(generator: int, q_size: int):
 
     return [GENERATORS[generator], ex_time, 2**q_size, not_aff, one_simple]
 
-
 if __name__ == "__main__":
     DB = dataAccess()
-    counters = [0, 0, 0]  # 3-simple, not aff, 1-simple 
+    counters = [0, 0, 0, 0]  # 3-simple, not aff, 1-simple, all
     for gen in range(3):
-        for size in range(3, 14):
-            for _ in range(50):
+        print("Start", gen, ":", end=" ")
+        for size in range(3, 12):
+            print(size, end="")
+            for _ in range(10):
+                counters[3] += 1
+                print(".", end="")
                 res = one_test(gen, size)
                 if res:
                     counters[0] += 1
@@ -52,4 +55,10 @@ if __name__ == "__main__":
                     DB.add_exp(*res)
                 else:
                     print("AAAAAAAAAAAAAAAAAAAAAAA")
+        print()
+
+    print(f"All: {counters[3]}")
+    print("3-simple: {0}\nNot affine: {1}\n1-simple: {2}".format(*counters))
+
+
     

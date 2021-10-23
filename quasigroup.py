@@ -59,18 +59,15 @@ class Quasigroup(object):
 
     def check_correctness(self) -> bool:
         """A simple check for correctness"""
-        bit_array: int = 0
-        full_line: int = (1 << self.size) - 1
+        q_list = [0 for _ in range(self.size)]
         for line in self.data:
-            bit_array = 0
+            q_list = [0 for _ in range(self.size)]
             for el in line:
                 if el >= self.size:
                     raise NameError("Incorrect quasigroup operation!")
-                mask = (1 << el)
-                bit_array |= mask
-            if bit_array != full_line:
-                raise NameError("Not a quasigroup! " +
-                                bin(bit_array) + " " + bin(full_line))
+                q_list[el] = 1
+            if sum(q_list) != self.size:
+                raise NameError("Not a quasigroup! " + q_list)
         return True
 
     def read_from_file(self, file: str, from_1: bool = True) -> bool:

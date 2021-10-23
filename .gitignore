@@ -11,4 +11,5 @@ gen*
 a.*
 *.err
 *.txt
+*.txt_
 *.sqlite

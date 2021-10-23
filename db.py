@@ -39,13 +39,13 @@ class dataAccess:
         """Create the initial tables main and notes."""
         self._execute_query(dbc.create_table)
 
-    def add_exp(self, gen_alg: str, ex_time: float, q_size: int, aff: bool, one_simple: bool):
+    def add_exp(self, gen_alg: str, ex_time: float, q_size: int, not_aff: bool, one_simple: bool):
         """Add new experiment with given fields."""
         self._execute_query(
             dbc.add_new_exp,
             gen_alg=gen_alg,
             ex_time=ex_time,
             q_size=q_size,
-            aff=aff,
+            not_aff=not_aff,
             one_simple=one_simple
         )

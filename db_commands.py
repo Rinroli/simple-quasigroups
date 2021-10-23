@@ -6,18 +6,18 @@ CREATE TABLE IF NOT EXISTS experiments (
   gen_alg TEXT,
   ex_time FLOAT NOT NULL,
   q_size INT NOT NULL,
-  aff BOOL,
+  not_aff BOOL,
   one_simple BOOL
 );
 """
 
 add_new_exp = """
 INSERT INTO
-  experiments (gen_alg, ex_time, q_size, aff, one_simple)
+  experiments (gen_alg, ex_time, q_size, not_aff, one_simple)
 VALUES
   (:gen_alg,
   :ex_time,
   :q_size,
-  :aff,
+  :not_aff,
   :one_simple);
 """

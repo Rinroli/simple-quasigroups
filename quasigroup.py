@@ -186,14 +186,9 @@ class Quasigroup(object):
         B = deepcopy(self)
         if not B._do_loop():
             return Quasigroup()
-        print()
-        print(B)
-        print()
+
         if not B._isotope():
             return Quasigroup()
-
-        print(B)
-        print()
 
         if not B._do_2_simple():
             return Quasigroup()
@@ -204,13 +199,6 @@ class Quasigroup(object):
 
 
 if __name__ == "__main__":
-    # qua = Quasigroup(10)
-    # for _ in range(5):
-    #     i, j = randint(0, 9), randint(0, 9)
-    #     qua.transpose_rows(i, j)
-
-    #     i, j = randint(0, 9), randint(0, 9)
-    #     qua.transpose_columns(i, j)
     qua = Quasigroup(file="ex_2.txt", from_1=False)
     print(qua)
     n = qua.create_simple()

@@ -5,6 +5,10 @@
 *.tar.gz
 gen*
 /subquasi/
+/aff/
 *.zip
 *.7z
 a.*
+*.err
+*.txt
+*.sqlite

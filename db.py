@@ -49,3 +49,7 @@ class dataAccess:
             not_aff=not_aff,
             one_simple=one_simple
         )
+    
+    def get_exp(self):
+        """Get all experiments"""
+        return self._read_info(dbc.get_all_exp)

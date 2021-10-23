@@ -3,9 +3,12 @@
 
 import subprocess
 import sys
+
 from quasigroup import Quasigroup
 from db import dataAccess
 from time import time as time_time
+import matplotlib.pyplot as plt
+import numpy as np
 # from
 
 GENERATORS = ["gen_tri_1", "gen_tri_2", "gen_ort"]
@@ -37,28 +40,50 @@ def one_test(generator: int, q_size: int):
 
     return [GENERATORS[generator], ex_time, 2**q_size, not_aff, one_simple]
 
+
+def create_plots(DB: dataAccess):
+    """Create plots for result of experiments"""
+    exp = DB.get_exp()
+    avs = []
+
+    for i in range(3, 12):
+        cur_size = list(filter(lambda x: x[0] == 2**i, exp))
+        av = sum(map(lambda x: x[1], cur_size)) / len(cur_size)
+        avs.append(av)
+
+    plt.plot([2**i for i in range(3, 12)], avs, label="experiment")
+    x = np.arange(0, 2**11, 0.01)
+    y = x**2 / 2**20
+    plt.plot(x,y, label="y = x**2 / 2**20")
+    plt.legend(loc='upper left')
+    plt.title("Сравнение с квадратичной зависимостью")
+    plt.xlabel("quasigroup order")
+    plt.ylabel("time")
+    plt.grid()
+    plt.show()
+
+
 if __name__ == "__main__":
     DB = dataAccess()
-    counters = [0, 0, 0, 0]  # 3-simple, not aff, 1-simple, all
-    for gen in range(3):
-        print("Start", gen, ":", end=" ")
-        for size in range(3, 12):
-            print(size, end="")
-            for _ in range(10):
-                counters[3] += 1
-                print(".", end="")
-                res = one_test(gen, size)
-                if res:
-                    counters[0] += 1
-                    counters[1] += 1 if res[3] else 0
-                    counters[2] += 1 if res[4] else 0
-                    DB.add_exp(*res)
-                else:
-                    print("AAAAAAAAAAAAAAAAAAAAAAA")
-        print()
+    # counters = [0, 0, 0, 0]  # 3-simple, not aff, 1-simple, all
+    # for gen in range(3):
+    #     print("Start", gen, ":", end=" ")
+    #     for size in range(3, 12):
+    #         print(size, end="")
+    #         for _ in range(10):
+    #             counters[3] += 1
+    #             print(".", end="")
+    #             res = one_test(gen, size)
+    #             if res:
+    #                 counters[0] += 1
+    #                 counters[1] += 1 if res[3] else 0
+    #                 counters[2] += 1 if res[4] else 0
+    #                 DB.add_exp(*res)
+    #             else:
+    #                 print("AAAAAAAAAAAAAAAAAAAAAAA")
+    #     print()
 
-    print(f"All: {counters[3]}")
-    print("3-simple: {0}\nNot affine: {1}\n1-simple: {2}".format(*counters))
+    # print(f"All: {counters[3]}")
+    # print("3-simple: {0}\nNot affine: {1}\n1-simple: {2}".format(*counters))
 
-
-    
+    create_plots(DB)

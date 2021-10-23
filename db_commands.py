@@ -21,3 +21,8 @@ VALUES
   :not_aff,
   :one_simple);
 """
+
+get_all_exp = """
+SELECT q_size, ex_time
+FROM experiments;
+"""

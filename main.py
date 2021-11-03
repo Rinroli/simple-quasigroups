@@ -104,7 +104,7 @@ def create_plots(DB: dataAccess):
     plt.legend(loc='upper left')
     plt.title("Сравнение с квадратичной зависимостью")
     plt.xlabel("quasigroup order")
-    plt.ylabel("time")
+    plt.ylabel("time, sec")
     plt.grid()
     plt.show()
 

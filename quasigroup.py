@@ -194,13 +194,50 @@ class Quasigroup(object):
 
         return B
 
+    def all_in_one(self):
+        """Return 2-simple quasigroup, optimized"""
+        B = deepcopy(self)
+
+        ROW_ORDER = list(range(-1, B.size - 1))
+        ROW_ORDER[0] = 0
+        ROW_ORDER[1] = B.size - 1
+
+        tmp_data = np.zeros((B.size, B.size), int)
+        for row in B.data:
+            tmp_data[ROW_ORDER[row[0]]] = row
+        B.data = deepcopy(tmp_data)
+
+        x: int = 0
+        while (x == 0) or (B[x][0] == x):
+            x += 1
+
+        for row, col in product(range(B.size), range(B.size)):
+            cur_col = B.data[0][col]
+            if cur_col == x:
+                cur_col = 0
+            elif cur_col == 0:
+                cur_col = x
+            
+            tmp_data[row][cur_col] = B.data[row][col]
+        B.data = deepcopy(tmp_data)
+
+        B.loop = False
+        B.half_loop = 0
+        B.mark = "S"
+
+        return B
+
 
 if __name__ == "__main__":
     qua = Quasigroup(file="ex_2.txt", from_1=False)
     print(qua)
     n = qua.create_simple()
+
+    m = qua.all_in_one()
     if not n:
         print("Something went wrong, sorry!")
     else:
         print(n)
-        n.export()
+        print()
+        print(m)
+        # n.export()

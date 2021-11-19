@@ -12,6 +12,7 @@ a.*
 *.err
 *.txt
 *.txt_
+!LICENSE.txt
 *.sqlite
 *.png
 *.sqlite

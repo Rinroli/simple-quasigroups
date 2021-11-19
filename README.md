@@ -6,7 +6,7 @@ Implementation of an algorithm for obtaining a simple quasigroup from a given qu
 
 ## Usage of [quasigroup.py](quasigroup.py)
 
-The algorithm is contained in the file [quasigroup.py](quasigroup.py). Dry run of this file will show an example on quasigroup from file [ex_2.txt](ex_2.txt) with printing of intermediate steps.
+The algorithm is contained in the file [quasigroup.py](quasigroup.py). Dry run of this file will show an example on quasigroup from file [ex_2.txt](ex_2.txt) with printing of intermediate steps. An example of a possible result can be viewed in the [file](ex2_result.txt).
 
 ### Initialization
 

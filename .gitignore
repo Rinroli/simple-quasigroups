@@ -13,6 +13,7 @@ a.*
 *.txt
 *.txt_
 !LICENSE.txt
+!ex2_result.txt
 *.sqlite
 *.png
 *.sqlite

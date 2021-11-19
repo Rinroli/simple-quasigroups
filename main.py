@@ -24,7 +24,8 @@ def one_test(generator: int, q_size: int):
     Q.random_alteration()
 
     start_time = time_time()
-    simple = Q.create_simple()
+    # simple = Q.create_simple()
+    simple = Q.all_in_one()
     ex_time = time_time() - start_time
 
     simple.export("in.txt")
@@ -53,9 +54,9 @@ def test_quasigroups(DB: dataAccess):
         print("Start", gen, ":", end=" ")
         for size in range(3, 12):
             print(size, end="")
-            for _ in range(10):
+            for _ in range(20):
                 counters[3] += 1
-                print(".", end="")
+                print("\t.",)
                 res = one_test(gen, size)
                 if res:
                     counters[0] += 1
@@ -67,7 +68,7 @@ def test_quasigroups(DB: dataAccess):
         print()
 
     print("Z_n: ", end="")
-    for q_size in range(10, 2050, 100):  # for Z_n
+    for q_size in range(10, 2080, 50):  # for Z_n
         counters[3] += 1
         res = one_test(0, q_size)
         if res:
@@ -97,12 +98,27 @@ def create_plots(DB: dataAccess):
             avs.append(av)
             tests.append(i)
 
-    plt.plot(tests, avs, label="experiment")
-    x = np.arange(0, 2**11, 0.01)
-    y = x**2 / 2**20
-    plt.plot(x,y, label="y = x**2 / 2**20")
+    plt.plot(tests, avs, label="experiment, optimized")
+
+    DB_old = dataAccess("old_exp.sqlite")
+    exp = DB_old.get_exp()
+    avs = []
+    tests = []
+
+    for i in range(3, 2100):
+        cur_size = list(filter(lambda x: x[0] == i, exp))
+        if len(cur_size):
+            av = sum(map(lambda x: x[1], cur_size)) / len(cur_size)
+            avs.append(av)
+            tests.append(i)
+
+    plt.plot(tests, avs, label="experiment, not optimized")
+
+    # x = np.arange(0, 2**11, 0.01)
+    # y = x**2 / 2**20
+    # plt.plot(x,y, label="y = x**2 / 2**20")
     plt.legend(loc='upper left')
-    plt.title("Сравнение с квадратичной зависимостью")
+    plt.title("Сравнение с оптимизацией")
     plt.xlabel("quasigroup order")
     plt.ylabel("time, sec")
     plt.grid()
@@ -112,6 +128,6 @@ def create_plots(DB: dataAccess):
 if __name__ == "__main__":
     DB = dataAccess()
     
-    # test_quasigroups(DB)
+    test_quasigroups(DB)
 
     create_plots(DB)

@@ -71,6 +71,10 @@ class Quasigroup(object):
         return True
 
     def read_from_file(self, file: str, from_1: bool = True) -> bool:
+        """Read quasigroup from file.
+
+        file > file name,
+        from_1 > kind of quasigroup is contained in the file, from 0 or 1"""
         data = []
         with open(file, "r") as f:
             prev: int = -1
@@ -178,14 +182,21 @@ class Quasigroup(object):
 
         return True
 
-    def create_simple(self):
+    def create_simple(self, show_trace: bool = False):
         """Return 2-simple quasigroup"""
         B = deepcopy(self)
         if not B._do_loop():
             return Quasigroup()
+        if show_trace:
+            print()
+            print(B)
+            print()
 
         if not B._isotope():
             return Quasigroup()
+        if show_trace:
+            print(B)
+            print()
 
         if not B._do_2_simple():
             return Quasigroup()
@@ -217,7 +228,7 @@ class Quasigroup(object):
                 cur_col = 0
             elif cur_col == 0:
                 cur_col = x
-            
+
             tmp_data[row][cur_col] = B.data[row][col]
         B.data = deepcopy(tmp_data)
 
@@ -231,13 +242,13 @@ class Quasigroup(object):
 if __name__ == "__main__":
     qua = Quasigroup(file="ex_2.txt", from_1=False)
     print(qua)
-    n = qua.create_simple()
+    n = qua.create_simple(show_trace=True)
 
-    m = qua.all_in_one()
+    # m = qua.all_in_one()
     if not n:
         print("Something went wrong, sorry!")
     else:
         print(n)
-        print()
-        print(m)
+        # print()
+        # print(m)
         # n.export()

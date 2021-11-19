@@ -14,3 +14,6 @@ a.*
 *.txt_
 *.sqlite
 *.png
+*.sqlite
+*.csv
+*.sql
